@@ -1,3 +1,4 @@
+install.packages("pageviews")
 library(simts)
 library(pageviews)
 
