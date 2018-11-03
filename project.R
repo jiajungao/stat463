@@ -1,0 +1,10 @@
+library(simts)
+install.packages("pageviews")
+library(pageviews)
+wiki_ts = project_pageviews(granularity = "daily", start = "2017090123", end = "2018102123")
+tail(wiki_ts)
+Xt = gts(wiki_ts$views)
+plot(Xt)
+mod = estimate(SARIMA(ar = 2, i = 0, ma = 1, sar = 2, si = 0, sma = 1, s = 7), Xt,
+               method = "rgmwm")
+check(mod)
