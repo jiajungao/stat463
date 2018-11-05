@@ -1,4 +1,4 @@
-install.packages("pageviews")
+#install.packages("pageviews")
 library(simts)
 library(pageviews)
 
@@ -34,5 +34,9 @@ plot(Xt_Thanks)
 
 
 plot(auto_corr(Xt_mobile))
-mod = estimate(SARIMA(ar = 1, i = 0, ma = 0, sar = 0, si = 0, sma = 0, s = 4), Xt_mobile)
-check(mod)
+plot(auto_corr(Xt_desk))
+plot(auto_corr(Xt_Sil))
+plot(auto_corr(Xt_Bey))
+plot(auto_corr(Xt_Noam))
+plot(auto_corr(Xt_lazio))
+plot(auto_corr(Xt_Thanks))
