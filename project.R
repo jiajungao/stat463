@@ -40,3 +40,11 @@ plot(auto_corr(Xt_Bey))
 plot(auto_corr(Xt_Noam))
 plot(auto_corr(Xt_lazio))
 plot(auto_corr(Xt_Thanks))
+
+mod_lazio_1 = estimate(AR(1),Xt_lazio)
+check(mod_lazio_1)
+pred_lazio <- predict(mod_lazio_1, n.ahead = 5, level = c(0.6, 0.9, 0.95))
+point_lazio <- pred_lazio$pred
+forecast_lazio <- gts(c(Xt_lazio, point_lazio))
+
+plot(forecast_lazio)
