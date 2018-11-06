@@ -41,8 +41,14 @@ plot(auto_corr(Xt_lazio))
 plot(auto_corr(Xt_Thanks))
 
 
-#mod_mobile = estimate(ARMA(8,3),Xt_mobile)
-#check(mod_mobile)
+mod_mobile = estimate(SARIMA(ar = 1, ma = 1, i = 1, sar = 1, si = 2, sma = 1, s = 7),Xt_mobile,method = "rgmwm")
+check(mod_mobile)
+
+mod_mobile = estimate(ARIMA(2, 2, 2),Xt_mobile,method = "rgmwm")
+check(mod_mobile)
+
+mod_mobile = estimate(SARMA(1, 0, 0, 0),Xt_mobile,method = "rgmwm")
+check(mod_mobile)
 
 mod_Sil = estimate(AR(8),Xt_Sil)
 check(mod_Sil)
