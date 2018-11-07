@@ -2,31 +2,31 @@
 library(simts)
 library(pageviews)
 
-wiki_mobile = project_pageviews(granularity = "daily", start = "2017040100", end = "2018110512",platform = "mobile-app")
+wiki_mobile = project_pageviews(granularity = "daily", start = "2017040100", end = "2018110612",platform = "mobile-app")
 Xt_mobile=gts(wiki_mobile$views)
 plot(Xt_mobile)
 
-wiki_desk = project_pageviews(granularity = "daily", start = "2017040100", end = "2018110512",platform = "desktop")
+wiki_desk = project_pageviews(granularity = "daily", start = "2017040100", end = "2018110612",platform = "desktop")
 Xt_desk=gts(wiki_desk$views)
 plot(Xt_desk)
 
-wiki_Sil = article_pageviews(article = 'Silvio_Berlusconi', start = "2018090100", end = "2018110512")
+wiki_Sil = article_pageviews(article = 'Silvio_Berlusconi', start = "2018090100", end = "2018110612")
 Xt_Sil=gts(wiki_Sil$views)
 plot(Xt_Sil)
 
-wiki_Bey = article_pageviews(article = 'Beyonce', start = "2018090100", end = "2018110512")
+wiki_Bey = article_pageviews(article = 'Beyonce', start = "2018090700", end = "20181100612")
 Xt_Bey=gts(wiki_Bey$views)
 plot(Xt_Bey)
 
-wiki_Noam = article_pageviews(article = 'Noam_Chomsky', start = "2018090100", end = "2018110512")
+wiki_Noam = article_pageviews(article = 'Noam_Chomsky', start = "2018090100", end = "2018110612")
 Xt_Noam=gts(wiki_Noam$views)
 plot(Xt_Noam)
 
-wiki_lazio = article_pageviews(article = 'SS_Lazio', start = "2018090100", end = "2018110512")
+wiki_lazio = article_pageviews(article = 'SS_Lazio', start = "2018090100", end = "2018110612")
 Xt_lazio=gts(wiki_lazio$views)
 plot(Xt_lazio)
 
-wiki_Thanks = article_pageviews(article = 'Thanksgiving', start = "2017090100", end = "2017110600")
+wiki_Thanks = article_pageviews(article = 'Thanksgiving', start = "2017100100", end = "2017110600")
 Xt_Thanks=gts(wiki_Thanks$views)
 plot(Xt_Thanks)
 
@@ -95,7 +95,7 @@ sil_forecasts
 
 
 select(AR(8), Xt_Bey, include.mean = TRUE, criterion = "aic", plot = TRUE)
-mod_Bey = estimate(AR(1),Xt_Bey)
+mod_Bey = estimate(AR(2),Xt_Bey)
 check(mod_Bey)
 pred_bey <- predict(mod_Bey, n.ahead = 1, level = 0.95)
 point_bey <- pred_bey$pred
@@ -134,7 +134,7 @@ lazio_forecasts
 
 #!!!!!
 select(AR(4), Xt_Thanks, include.mean = TRUE, criterion = "aic", plot = TRUE)
-mod_Thanks = estimate(AR(5),Xt_Thanks)
+mod_Thanks = estimate(AR(2),Xt_Thanks)
 check(mod_Thanks)
 pred_Thanks <- predict(mod_Thanks, n.ahead = 1, level = 0.95)
 point_Thanks <- pred_Thanks$pred
