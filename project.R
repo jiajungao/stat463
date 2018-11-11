@@ -1,6 +1,7 @@
 #install.packages("pageviews")
 library(simts)
 library(pageviews)
+library(forecast463)
 
 wiki_mobile = project_pageviews(granularity = "daily", start = "2017040100", end = "2018110612",platform = "mobile-app")
 Xt_mobile=gts(wiki_mobile$views)
