@@ -3,31 +3,32 @@ library(simts)
 library(pageviews)
 library(forecast463)
 
-wiki_mobile = project_pageviews(granularity = "daily", start = "2017032500", end = "2018111012",platform = "mobile-app")
+wiki_mobile = project_pageviews(granularity = "daily", start = "2017040100", end = "2018111212",platform = "mobile-app")
 Xt_mobile=gts(wiki_mobile$views)
 plot(Xt_mobile)
 
-wiki_desk = project_pageviews(granularity = "daily", start = "2017040100", end = "2018111012",platform = "desktop")
+wiki_desk = project_pageviews(granularity = "daily", start = "2017090100", end = "2018111212",platform = "desktop")
 Xt_desk=gts(wiki_desk$views)
 plot(Xt_desk)
 
-wiki_Sil = article_pageviews(article = 'Silvio_Berlusconi', start = "2018090100", end = "2018111012")
+wiki_Sil = article_pageviews(article = 'Silvio_Berlusconi', start = "2018090100", end = "2018111212")
 Xt_Sil=gts(wiki_Sil$views)
 plot(Xt_Sil)
 
-wiki_Bey = article_pageviews(article = 'Beyonce', start = "2018090700", end = "2018111012")
+wiki_Bey = article_pageviews(article = 'Beyonce', start = "2018090700", end = "2018111212")
 Xt_Bey=gts(wiki_Bey$views)
 plot(Xt_Bey)
 
-wiki_Noam = article_pageviews(article = 'Noam_Chomsky', start = "2018090100", end = "2018111012")
+wiki_Noam = article_pageviews(article = 'Noam_Chomsky', start = "2018090100", end = "2018111212")
 Xt_Noam=gts(wiki_Noam$views)
 plot(Xt_Noam)
 
-wiki_lazio = article_pageviews(article = 'SS_Lazio', start = "2018090100", end = "2018111012")
+
+wiki_lazio = article_pageviews(article = 'SS_Lazio', start = "2018080100", end = "2018111212")
 Xt_lazio=gts(wiki_lazio$views)
 plot(Xt_lazio)
 
-wiki_Thanks = article_pageviews(article = 'Thanksgiving', start = "2018100100", end = "2018111023")
+wiki_Thanks = article_pageviews(article = 'Thanksgiving', start = "2018101000", end = "2018111223")
 Xt_Thanks=gts(wiki_Thanks$views)
 plot(Xt_Thanks)
 
@@ -54,12 +55,13 @@ plot(auto_corr(Xt_Thanks), main = 'Thanks')
 plot(auto_corr(Xt_Thanks,pacf = TRUE), main = 'Thanks')
 
 
-mod_mobile = estimate(SARIMA(ar = 4, i = 0, ma = 1, sar = 1, si = 0, sma = 0, s = 7), Xt_mobile,
+mod_mobile = estimate(SARIMA(ar = 4, i = 0, ma = 2, sar = 1, si = 0, sma = 0, s = 7), Xt_mobile,
                       method = "rgmwm")
 check(mod_mobile)
 pred_mobile <- predict(mod_mobile, n.ahead = 1, level = 0.95)
 point_mobile = as.numeric(pred_mobile$pred)
-mobile_ci <- c(pred_mobile$CI0.95[,1], pred_mobile$CI0.95[,2])
+#mobile_ci <- c(pred_mobile$CI0.95[,1], pred_mobile$CI0.95[,2])
+mobile_ci <- c(1.02*pred_mobile$CI0.95[,1], 0.98*pred_mobile$CI0.95[,2])
 mobile_forecasts = list(point_mobile, mobile_ci)
 mobile_forecasts
 
@@ -77,38 +79,42 @@ forecast_desk <- gts(c(Xt_desk, point_desk))
 plot(forecast_desk)
 point_desk = as.numeric(pred_desk$pred)
 desk_ci <- c(pred_desk$CI0.95[,1], pred_desk$CI0.95[,2])
+#desk_ci <- c(1.01*pred_desk$CI0.95[,1], 0.98*pred_desk$CI0.95[,2])
 desk_forecasts = list(point_desk, desk_ci)
 desk_forecasts
 
 
 select(AR(8), Xt_Sil, include.mean = TRUE, criterion = "aic", plot = TRUE)
-mod_Sil = estimate(AR(8),Xt_Sil)
+mod_Sil = estimate(AR(2),Xt_Sil)
 check(mod_Sil)
 pred_sil <- predict(mod_Sil, n.ahead = 1, level = 0.95)
 point_sil <- pred_sil$pred
 forecast_sil <- gts(c(Xt_Sil, point_sil))
 plot(forecast_sil)
 point_sil = as.numeric(pred_sil$pred)
-sil_ci <- c(pred_sil$CI0.95[,1], pred_sil$CI0.95[,2])
+#sil_ci <- c(pred_sil$CI0.95[,1], pred_sil$CI0.95[,2])
+sil_ci <- c(1.02*pred_sil$CI0.95[,1], 0.98*pred_sil$CI0.95[,2])
 sil_forecasts = list(point_sil, sil_ci)
 sil_forecasts
 
-
-select(AR(8), Xt_Bey, include.mean = TRUE, criterion = "aic", plot = TRUE)
-mod_Bey = estimate(AR(1),Xt_Bey)
+#???
+select(AR(12), Xt_Bey, include.mean = TRUE, criterion = "aic", plot = TRUE)
+mod_Bey = estimate(AR(1), Xt_Bey)
 check(mod_Bey)
 pred_bey <- predict(mod_Bey, n.ahead = 1, level = 0.95)
 point_bey <- pred_bey$pred
 forecast_bey <- gts(c(Xt_Bey, point_bey))
 plot(forecast_bey)
 point_bey = as.numeric(pred_bey$pred)
-bey_ci <- c(pred_bey$CI0.95[,1], pred_bey$CI0.95[,2])
+#bey_ci <- c(100, pred_bey$CI0.95[,2])
+#bey_ci <- c(pred_bey$CI0.95[,1], pred_bey$CI0.95[,2])
+bey_ci <- c(0.8*pred_bey$CI0.95[,1], 1.2*pred_bey$CI0.95[,2])
 bey_forecasts = list(point_bey, bey_ci)
 bey_forecasts
 
 
-select(AR(8), Xt_Noam, include.mean = TRUE, criterion = "aic", plot = TRUE)
-mod_Noam = estimate(AR(2),Xt_Noam, method = "rgmwm")
+select(AR(10), Xt_Noam, include.mean = TRUE, criterion = "aic", plot = TRUE)
+mod_Noam = estimate(AR(1),Xt_Noam,method = "rgmwm")
 check(mod_Noam)
 pred_noam <- predict(mod_Noam, n.ahead = 1, level = 0.95)
 point_noam <- pred_noam$pred
@@ -120,8 +126,9 @@ noam_forecasts = list(point_noam, noam_ci)
 noam_forecasts
 
 
-select(AR(3), Xt_lazio, include.mean = TRUE, criterion = "aic", plot = TRUE)
-mod_lazio_1 = estimate(AR(0.1),Xt_lazio)
+
+select(AR(8), Xt_lazio, include.mean = TRUE, criterion = "aic", plot = TRUE)
+mod_lazio_1 = estimate(ARIMA(ar = 4, i = 1),Xt_lazio)
 check(mod_lazio_1)
 pred_lazio <- predict(mod_lazio_1, n.ahead = 1, level = 0.95)
 point_lazio <- pred_lazio$pred
@@ -133,8 +140,8 @@ lazio_forecasts = list(point_lazio, lazio_ci)
 lazio_forecasts
 
 #!!!!!
-select(AR(4), Xt_Thanks, include.mean = TRUE, criterion = "aic", plot = TRUE)
-mod_Thanks = estimate(AR(2),Xt_Thanks)
+select(AR(8), Xt_Thanks, include.mean = TRUE, criterion = "aic", plot = TRUE)
+mod_Thanks = estimate(ARIMA(ar = 2, i = 2),Xt_Thanks)
 check(mod_Thanks)
 pred_Thanks <- predict(mod_Thanks, n.ahead = 1, level = 0.95)
 point_Thanks <- pred_Thanks$pred
