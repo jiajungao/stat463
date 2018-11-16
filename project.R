@@ -3,34 +3,35 @@ library(simts)
 library(pageviews)
 library(forecast463)
 
-wiki_mobile = project_pageviews(granularity = "daily", start = "2017040100", end = "2018111212",platform = "mobile-app")
+wiki_mobile = project_pageviews(granularity = "daily", start = "2018010100", end = "2018111612",platform = "mobile-app")
 Xt_mobile=gts(wiki_mobile$views)
 plot(Xt_mobile)
 
-wiki_desk = project_pageviews(granularity = "daily", start = "2017090100", end = "2018111212",platform = "desktop")
+wiki_desk = project_pageviews(granularity = "daily", start = "2018010100", end = "2018111612",platform = "desktop")
 Xt_desk=gts(wiki_desk$views)
 plot(Xt_desk)
 
-wiki_Sil = article_pageviews(article = 'Silvio_Berlusconi', start = "2018090100", end = "2018111212")
+wiki_Sil = article_pageviews(article = 'Silvio_Berlusconi', start = "2018090100", end = "2018111612")
 Xt_Sil=gts(wiki_Sil$views)
 plot(Xt_Sil)
 
-wiki_Bey = article_pageviews(article = 'Beyonce', start = "2018090700", end = "2018111212")
+wiki_Bey = article_pageviews(article = 'Beyonce', start = "2018090700", end = "2018111612")
 Xt_Bey=gts(wiki_Bey$views)
 plot(Xt_Bey)
 
-wiki_Noam = article_pageviews(article = 'Noam_Chomsky', start = "2018090100", end = "2018111212")
+wiki_Noam = article_pageviews(article = 'Noam_Chomsky', start = "2018090100", end = "2018111612")
 Xt_Noam=gts(wiki_Noam$views)
 plot(Xt_Noam)
 
 
-wiki_lazio = article_pageviews(article = 'SS_Lazio', start = "2018080100", end = "2018111212")
+wiki_lazio = article_pageviews(article = 'SS_Lazio', start = "2018080100", end = "2018111612")
 Xt_lazio=gts(wiki_lazio$views)
 plot(Xt_lazio)
 
-wiki_Thanks = article_pageviews(article = 'Thanksgiving', start = "2018101000", end = "2018111223")
+wiki_Thanks = article_pageviews(article = 'Thanksgiving', start = "2018101000", end = "2018111823")
 Xt_Thanks=gts(wiki_Thanks$views)
 plot(Xt_Thanks)
+
 
 
 plot(auto_corr(Xt_mobile), main = 'mobile')
@@ -55,7 +56,7 @@ plot(auto_corr(Xt_Thanks), main = 'Thanks')
 plot(auto_corr(Xt_Thanks,pacf = TRUE), main = 'Thanks')
 
 
-mod_mobile = estimate(SARIMA(ar = 4, i = 0, ma = 2, sar = 1, si = 0, sma = 0, s = 7), Xt_mobile,
+mod_mobile = estimate(SARIMA(ar = 2, i = 1, ma = 1, sar = 2, si = 1, sma = 0, s = 7), Xt_mobile,
                       method = "rgmwm")
 check(mod_mobile)
 pred_mobile <- predict(mod_mobile, n.ahead = 1, level = 0.95)
@@ -70,7 +71,7 @@ forecast_mobile <- gts(c(Xt_mobile, point_mobile))
 plot(forecast_mobile)
 
 #!!!
-mod_desk = estimate(SARIMA(ar = 4, i = 1, ma = 0, sar = 2, si = 1, sma = 0, s = 7), Xt_desk,
+mod_desk = estimate(SARIMA(ar = 1, i = 0, ma = 0, sar = 1, si = 0, sma = 0, s = 7), Xt_desk,
                     method = "rgmwm")
 check(mod_desk)
 pred_desk <- predict(mod_desk, n.ahead = 1, level = 0.95)
@@ -92,8 +93,8 @@ point_sil <- pred_sil$pred
 forecast_sil <- gts(c(Xt_Sil, point_sil))
 plot(forecast_sil)
 point_sil = as.numeric(pred_sil$pred)
-#sil_ci <- c(pred_sil$CI0.95[,1], pred_sil$CI0.95[,2])
-sil_ci <- c(1.02*pred_sil$CI0.95[,1], 0.98*pred_sil$CI0.95[,2])
+sil_ci <- c(pred_sil$CI0.95[,1], pred_sil$CI0.95[,2])
+#sil_ci <- c(1.02*pred_sil$CI0.95[,1], 0.98*pred_sil$CI0.95[,2])
 sil_forecasts = list(point_sil, sil_ci)
 sil_forecasts
 
@@ -107,8 +108,8 @@ forecast_bey <- gts(c(Xt_Bey, point_bey))
 plot(forecast_bey)
 point_bey = as.numeric(pred_bey$pred)
 #bey_ci <- c(100, pred_bey$CI0.95[,2])
-#bey_ci <- c(pred_bey$CI0.95[,1], pred_bey$CI0.95[,2])
-bey_ci <- c(0.8*pred_bey$CI0.95[,1], 1.2*pred_bey$CI0.95[,2])
+bey_ci <- c(pred_bey$CI0.95[,1], pred_bey$CI0.95[,2])
+#bey_ci <- c(0.9*pred_bey$CI0.95[,1], 1.1*pred_bey$CI0.95[,2])
 bey_forecasts = list(point_bey, bey_ci)
 bey_forecasts
 
@@ -141,14 +142,16 @@ lazio_forecasts
 
 #!!!!!
 select(AR(8), Xt_Thanks, include.mean = TRUE, criterion = "aic", plot = TRUE)
-mod_Thanks = estimate(ARIMA(ar = 2, i = 2),Xt_Thanks)
+mod_Thanks = estimate(ARIMA(ar = 2, i = 1),Xt_Thanks)
 check(mod_Thanks)
 pred_Thanks <- predict(mod_Thanks, n.ahead = 1, level = 0.95)
 point_Thanks <- pred_Thanks$pred
 forecast_Thanks <- gts(c(Xt_Thanks, point_Thanks))
 plot(forecast_Thanks)
 point_Thanks = as.numeric(pred_Thanks$pred)
+#point_Thanks = 1.05*as.numeric(pred_Thanks$pred)
 Thanks_ci <- c(pred_Thanks$CI0.95[,1], pred_Thanks$CI0.95[,2])
+#Thanks_ci <- c(1.05*pred_Thanks$CI0.95[,1], 1.02*pred_Thanks$CI0.95[,2])
 Thanks_forecasts = list(point_Thanks, Thanks_ci)
 Thanks_forecasts
 
